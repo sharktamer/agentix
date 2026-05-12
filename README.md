@@ -58,6 +58,8 @@ Chaque agent pointe vers un `provider_id` — une entrée dans la liste des prov
 
 ### Ajouter un provider
 
+![Menu d'ajout d'un provider](docs/providers.png)
+
 1. Ouvrir **http://localhost:8000**
 2. Cliquer sur **⚙ Providers** en haut à droite
 3. Cliquer **Nouveau provider** et remplir :
@@ -133,7 +135,7 @@ ssh-copy-id user@serveur-cible
 2. Saisir un nom — le dossier et les fichiers par défaut sont créés automatiquement
 3. Cliquer ✏️ pour ouvrir l'éditeur :
    - Onglet **Prompt** : rédiger le rôle, la personnalité, les contraintes de l'agent
-   - Onglet **Config** : choisir le provider, le modèle, température et max_tokens. Activer ou désactiver les tools en cliquant sur les badges dans la section **Tools** — seuls les tools cochés sont transmis au modèle. Cocher **Peut participer au Salon** ou **Battle Royale** pour rendre l'agent disponible dans ces modes.
+   - Onglet **Config** : choisir le provider, le modèle, température et max_tokens. Activer ou désactiver les tools en cliquant sur les badges dans la section **Tools** — seuls les tools cochés sont transmis au modèle. Activer le toggle **Agent ludique** pour rendre l'agent disponible en Salon et Battle Royale.
    - Onglet **Contexte** : ajuster les budgets de tokens par compartiment
 4. Sauvegarder — l'agent est disponible immédiatement, sans redémarrer
 
@@ -342,7 +344,7 @@ Débat structuré entre plusieurs agents sur un sujet libre. Idéal pour compare
 
 ![Résultat d'un vote en Salon avec Homer, Socrate et Claire](docs/salon.png)
 
-Seuls les agents avec `"in_salon": true` apparaissent dans la liste de sélection. Pour activer ce flag : éditeur ✏️ → onglet **Config** → cocher **Peut participer au Salon**.
+Seuls les agents marqués **Agent ludique** apparaissent dans la liste de sélection. Pour activer : éditeur ✏️ → onglet **Config** → activer le toggle **Agent ludique**.
 
 ### Battle Royale
 
@@ -361,7 +363,7 @@ Mode éliminatoire entre agents. Chaque round, les agents argumentent pour leur 
 
 Ce mécanisme de fin force les modèles à raisonner sur la coopération vs. la trahison, et produit des comportements souvent révélateurs des différences entre modèles.
 
-Seuls les agents avec `"in_battle": true` apparaissent dans la liste de sélection. Pour activer ce flag : éditeur ✏️ → onglet **Config** → cocher **Peut participer au Battle Royale**.
+Seuls les agents marqués **Agent ludique** apparaissent dans la liste de sélection. Pour activer : éditeur ✏️ → onglet **Config** → activer le toggle **Agent ludique**.
 
 ---
 
