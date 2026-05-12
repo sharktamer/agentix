@@ -2,6 +2,8 @@
 
 > Une sandbox pour explorer les mécanismes internes des systèmes IA agentiques modernes — boucle agentique, gestion du contexte, RAG, function calling, multi-agents et administration SSH distante.
 
+![Interface de chat avec Socrate](docs/chat.png)
+
 ---
 
 ## Table des matières
@@ -93,8 +95,6 @@ Dans l'éditeur d'agent (cliquer sur un agent → ✏️) :
 Le projet inclut trois agents prêts à l'emploi. Il suffit de leur assigner un provider et un modèle dans l'éditeur.
 
 ### Socrate — agent conversationnel
-
-![Interface de chat avec Socrate](docs/chat.png)
 
 Agent philosophe utilisant la méthode maïeutique. Sans tools, contexte orienté vers l'historique long. Idéal pour :
 - Débuter avec Agentix (le cas le plus simple)
