@@ -1,13 +1,13 @@
 {
   "provider_id": "lmstudio",
   "model": "qwen/qwen3.5-9b",
-  "temperature": 0.8,
-  "max_tokens": 1024,
+  "temperature": 1.0,
+  "max_tokens": 512,
   "allowed_tools": [],
   "can_spawn": false,
   "spawnable_agents": [],
   "max_iterations": 1,
-  "tags": ["ludique", "débat", "philosophie"],
+  "tags": ["ludique", "débat", "comédie"],
   "in_salon": true,
   "in_battle": true,
   "context_limits": {

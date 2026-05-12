@@ -1,6 +1,6 @@
 {
   "provider_id": "lmstudio",
-  "model": "qwen/qwen3-14b",
+  "model": "qwen/qwen3.5-9b",
   "temperature": 0.3,
   "max_tokens": 1024,
   "allowed_tools": ["spawn_agent"],

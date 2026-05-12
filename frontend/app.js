@@ -21,7 +21,7 @@ const S = {
   currentSpawnId: null,
   agentFilter: '',
   tagFilter: new Set(),
-  showLudique: false,
+  showLudique: true,
   mode: 'chat',           // 'chat' | 'debate' | 'battle'
   debateId: null,
   debating: false,
