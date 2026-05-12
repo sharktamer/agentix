@@ -46,7 +46,7 @@ Les trois agents inclus sont préconfigurés pour LM Studio (`http://localhost:1
 mv providers.example.json providers.json
 ```
 
-Puis démarrer LM Studio et charger le modèle `qwen/qwen3.5-9b` — c'est le modèle avec lequel cette application a été principalement testée. **Important : charger le modèle en mode "no thinking"** (désactiver le raisonnement étendu). En mode thinking, le modèle peut consommer la totalité du budget de tokens en réflexion interne avant même de produire une réponse, ce qui vide le contexte et bloque les agents. Tout modèle disponible dans LM Studio peut être utilisé à la place.
+Puis démarrer LM Studio et charger le modèle de votre choix. Cette application a été principalement développée et testée avec `qwen/qwen3.5-9b` en mode **"no thinking"** — en mode thinking, le modèle peut consommer l'intégralité du budget de tokens en réflexion interne avant de produire une réponse.
 
 Pour utiliser un autre provider (Ollama, OpenAI, etc.), l'ajouter via **⚙ Providers** dans l'interface.
 
