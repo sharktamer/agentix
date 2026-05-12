@@ -1,6 +1,6 @@
 {
-  "provider_id": "",
-  "model": "",
+  "provider_id": "lmstudio",
+  "model": "qwen/qwen3-8b",
   "temperature": 0.8,
   "max_tokens": 1024,
   "allowed_tools": [],

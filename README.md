@@ -38,6 +38,18 @@ Puis ouvrir : **http://localhost:8000**
 
 Les dépendances sont installées automatiquement par `uv` au premier lancement (FastAPI, ChromaDB, sentence-transformers, paramiko…). Aucun `pip install` nécessaire.
 
+### Connecter LM Studio
+
+Les trois agents inclus sont préconfigurés pour LM Studio (`http://localhost:1234/v1`). Avant le premier lancement, renommer le fichier fourni :
+
+```bash
+mv providers.example.json providers.json
+```
+
+Puis démarrer LM Studio et charger les modèles souhaités. Les modèles suggérés dans les configs des agents (`qwen/qwen3-8b`, `qwen/qwen3-14b`…) peuvent être remplacés par n'importe quel modèle disponible dans LM Studio.
+
+Pour utiliser un autre provider (Ollama, OpenAI, etc.), l'ajouter via **⚙ Providers** dans l'interface.
+
 ---
 
 ## Configurer un provider LLM
