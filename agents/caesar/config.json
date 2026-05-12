@@ -1,0 +1,21 @@
+{
+  "provider_id": "",
+  "model": "",
+  "temperature": 0.3,
+  "max_tokens": 1024,
+  "allowed_tools": ["spawn_agent"],
+  "can_spawn": true,
+  "spawnable_agents": ["centurion"],
+  "max_iterations": 3,
+  "tags": ["admin", "planificateur"],
+  "in_salon": false,
+  "in_battle": false,
+  "context_limits": {
+    "total": 4000,
+    "system": 1400,
+    "history": 1000,
+    "rag": 0,
+    "tools": 400,
+    "user": 800
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "provider_id": "lmstudio",
+  "model": "qwen/qwen3.5-9b",
+  "temperature": 0.2,
+  "max_tokens": 2048,
+  "allowed_tools": ["ssh_exec", "ssh_read_file", "process_status", "process_wait"],
+  "can_spawn": false,
+  "spawnable_agents": [],
+  "max_iterations": 8,
+  "tags": ["admin", "executeur"],
+  "in_salon": false,
+  "in_battle": false,
+  "context_limits": {
+    "total": 4000,
+    "system": 800,
+    "history": 0,
+    "rag": 0,
+    "tools": 800,
+    "user": 2000
+  }
+}

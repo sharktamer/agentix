@@ -1,0 +1,21 @@
+{
+  "provider_id": "lmstudio",
+  "model": "votre-modele-leger-ici",
+  "temperature": 0.1,
+  "max_tokens": 2048,
+  "allowed_tools": ["ssh_exec", "ssh_read_file", "process_status", "process_wait"],
+  "can_spawn": false,
+  "spawnable_agents": [],
+  "max_iterations": 10,
+  "tags": ["ssh", "infrastructure"],
+  "in_salon": false,
+  "in_battle": false,
+  "context_limits": {
+    "total": 4000,
+    "system": 800,
+    "history": 0,
+    "rag": 0,
+    "tools": 800,
+    "user": 2400
+  }
+}

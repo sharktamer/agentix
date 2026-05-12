@@ -1,0 +1,21 @@
+{
+  "provider_id": "lmstudio",
+  "model": "votre-modele-ici",
+  "temperature": 0.7,
+  "max_tokens": 512,
+  "allowed_tools": [],
+  "can_spawn": false,
+  "spawnable_agents": [],
+  "max_iterations": 1,
+  "tags": ["généraliste"],
+  "in_salon": false,
+  "in_battle": false,
+  "context_limits": {
+    "total": 3000,
+    "system": 600,
+    "history": 1800,
+    "rag": 0,
+    "tools": 0,
+    "user": 600
+  }
+}

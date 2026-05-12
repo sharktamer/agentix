@@ -1,0 +1,21 @@
+{
+  "provider_id": "lmstudio",
+  "model": "votre-modele-ici",
+  "temperature": 0.5,
+  "max_tokens": 1024,
+  "allowed_tools": ["search_knowledge", "write_knowledge"],
+  "can_spawn": false,
+  "spawnable_agents": [],
+  "max_iterations": 3,
+  "tags": ["rag", "documentation"],
+  "in_salon": false,
+  "in_battle": false,
+  "context_limits": {
+    "total": 4000,
+    "system": 600,
+    "history": 1000,
+    "rag": 1500,
+    "tools": 300,
+    "user": 600
+  }
+}

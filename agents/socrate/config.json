@@ -1,0 +1,21 @@
+{
+  "provider_id": "",
+  "model": "",
+  "temperature": 0.8,
+  "max_tokens": 1024,
+  "allowed_tools": [],
+  "can_spawn": false,
+  "spawnable_agents": [],
+  "max_iterations": 1,
+  "tags": ["ludique", "débat", "philosophie"],
+  "in_salon": true,
+  "in_battle": true,
+  "context_limits": {
+    "total": 4000,
+    "system": 800,
+    "history": 2400,
+    "rag": 0,
+    "tools": 0,
+    "user": 800
+  }
+}

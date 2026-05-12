@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentix — IA agentique locale</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="header">
+  <div class="logo">agentix<span>.local</span></div>
+  <div class="hdr-badge">plateforme pédagogique · IA agentique locale</div>
+  <button class="hdr-btn" onclick="switchMode('chat')" id="hdr-home">🏠 Home</button>
+  <button class="hdr-btn" onclick="switchMode('debate')" id="hdr-salon">🎭 Salon</button>
+  <button class="hdr-btn" onclick="switchMode('battle')" id="hdr-battle">⚔️ Battle</button>
+</div>
+
+<!-- Shell — views are mounted here by JS -->
+<div id="app"></div>
+
+<!-- MOBILE NAV -->
+<nav id="mobile-nav">
+  <button class="mnav-btn active" data-tab="sidebar" onclick="mobileTab('sidebar')">
+    <span class="mnav-icon">🤖</span>
+    <span>Agents</span>
+  </button>
+  <button class="mnav-btn" data-tab="chat" onclick="mobileTab('chat')">
+    <span class="mnav-icon">💬</span>
+    <span>Chat</span>
+  </button>
+  <button class="mnav-btn" data-tab="rpanel" onclick="mobileTab('rpanel')">
+    <span class="mnav-icon">📊</span>
+    <span>Info</span>
+  </button>
+  <button class="mnav-btn" data-tab="salon" onclick="switchMode('debate')">
+    <span class="mnav-icon">🎭</span>
+    <span>Salon</span>
+  </button>
+  <button class="mnav-btn" data-tab="battle" onclick="switchMode('battle')">
+    <span class="mnav-icon">⚔️</span>
+    <span>Battle</span>
+  </button>
+</nav>
+
+<!-- EDITOR MODAL -->
+<div id="ed-overlay" class="overlay" onclick="handleOverlayClick(event,'ed-overlay')">
+  <div class="modal" style="width:760px;max-width:95vw;max-height:90vh;display:flex;flex-direction:column;">
+    <div class="mhdr">
+      <div class="mtitle" id="ed-title">Modifier l'agent</div>
+      <button class="btn btng" onclick="closeEditor()" style="padding:6px 12px;font-size:12px;">✕</button>
+    </div>
+    <div class="etabs">
+      <div class="etab active" onclick="switchEtab('prompt')">📝 Personnalité</div>
+      <div class="etab" onclick="switchEtab('config')">⚙️ Configuration</div>
+      <div class="etab" onclick="switchEtab('tools')">🔧 Tools</div>
+    </div>
+    <div class="mbody" id="etab-prompt" style="flex:1;overflow-y:auto;">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.7;">Sections reconnues : <code># Nom</code> <code># Role</code> <code># Personnalité</code> <code># Objectif</code> <code># Capacités</code> <code># Contraintes</code></div>
+      <textarea id="ed-md" class="code"></textarea>
+    </div>
+    <div class="mbody" id="etab-config" style="display:none;overflow-y:auto;">
+      <div class="frow2">
+        <div>
+          <label class="flabel">Provider</label>
+          <select id="ec-provider" class="finput" onchange="onEditorProviderChange()" style="cursor:pointer;"></select>
+        </div>
+        <div>
+          <label class="flabel">Modèle</label>
+          <input id="ec-model" class="finput" list="ec-model-list" placeholder="Nom du modèle" />
+          <datalist id="ec-model-list"></datalist>
+        </div>
+      </div>
+      <div class="frow2">
+        <div><label class="flabel">Température (<span id="ec-tv">0.7</span>)</label>
+          <input id="ec-temp" type="range" min="0" max="1" step="0.05" style="width:100%;accent-color:var(--accent);" oninput="document.getElementById('ec-tv').textContent=this.value" /></div>
+        <div><label class="flabel">Max tokens</label><input id="ec-tok" type="number" class="finput" /></div>
+      </div>
+      <div class="frow2">
+        <div><label class="flabel">Max itérations</label><input id="ec-iter" type="number" class="finput" min="1" max="20" /></div>
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">Tags</div>
+        <div id="ed-tags-wrap" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:24px;"></div>
+        <div style="display:flex;gap:6px;">
+          <input id="ed-tag-input" class="finput" placeholder="Nouveau tag..."
+            onkeydown="if(event.key==='Enter'){event.preventDefault();addEditorTag();}" />
+          <button type="button" class="btn btng" onclick="addEditorTag()" style="padding:6px 12px;font-size:12px;white-space:nowrap;">+ Ajouter</button>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">Sous-agents</div>
+        <div class="sptoggle" id="sp-toggle" onclick="toggleSpawn()">
+          <div class="spill"></div>
+          <div>
+            <div style="font-size:13px;font-weight:500;">Autoriser spawn_agent</div>
+            <div style="font-size:11px;color:var(--muted);">Déléguer des tâches à d'autres agents</div>
+          </div>
+        </div>
+        <div id="ed-spawnable-section" style="margin-top:10px;display:none;">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Agents autorisés <span style="opacity:.6;">(vide = tous)</span></div>
+          <div id="ed-spawnable-wrap" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;"></div>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">Modes collectifs</div>
+        <div class="sptoggle" id="ludique-toggle" onclick="document.getElementById('ludique-toggle').classList.toggle('on')" style="--pill-on:var(--purple);">
+          <div class="spill" style="--pill-on:var(--purple);"></div>
+          <div>
+            <div style="font-size:13px;font-weight:500;">🎭 Agent ludique</div>
+            <div style="font-size:11px;color:var(--muted);">Participe au Salon et au Battle Royale — masqué de la liste principale</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mbody" id="etab-tools" style="display:none;overflow-y:auto;">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.7;">
+        Seuls les tools cochés sont visibles du LLM — moins de tokens, moins d'hallucinations.
+      </div>
+      <div id="ed-toggles"></div>
+    </div>
+    <div class="mfooter">
+      <button class="btn btnd" onclick="deleteAgent()">🗑 Supprimer</button>
+      <button class="btn btng" onclick="closeEditor()">Annuler</button>
+      <button class="btn btnp" onclick="saveAgent()">💾 Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROVIDERS MODAL -->
+<div id="providers-overlay" class="overlay" onclick="handleOverlayClick(event,'providers-overlay')">
+  <div class="modal" style="width:580px;max-width:95vw;max-height:90vh;display:flex;flex-direction:column;">
+    <div class="mhdr">
+      <div class="mtitle">🔌 Providers</div>
+      <button class="btn btng" onclick="closeProvidersModal()" style="padding:6px 12px;font-size:12px;">✕</button>
+    </div>
+    <div class="mbody" style="display:flex;flex-direction:column;gap:16px;overflow-y:auto;">
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;background:var(--amber-dim);border:1px solid var(--amber);border-radius:8px;padding:10px 12px;">
+        ⚠️ Les clés sont stockées dans <code>providers.json</code> sur le disque local — ce fichier est dans <code>.gitignore</code> et ne sera jamais commité.
+      </div>
+
+      <!-- Formulaire ajout/édition -->
+      <div style="display:flex;flex-direction:column;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Ajouter / modifier un provider</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:2px;">
+          <button class="btn btng" style="font-size:11px;padding:4px 10px;" onclick="fillProviderPreset('gemini','Gemini','https://generativelanguage.googleapis.com/v1beta/openai',['gemini-3.1-flash-lite','gemini-3-flash-preview','gemini-2.5-flash'])">Gemini</button>
+          <button class="btn btng" style="font-size:11px;padding:4px 10px;" onclick="fillProviderPreset('openai','OpenAI','https://api.openai.com/v1',['gpt-4o-mini','gpt-4o','o3-mini'])">OpenAI</button>
+          <button class="btn btng" style="font-size:11px;padding:4px 10px;" onclick="fillProviderPreset('groq','Groq','https://api.groq.com/openai/v1',['llama-3.3-70b-versatile','llama-3.1-8b-instant','mixtral-8x7b-32768'])">Groq</button>
+          <button class="btn btng" style="font-size:11px;padding:4px 10px;" onclick="fillProviderPreset('openrouter','OpenRouter','https://openrouter.ai/api/v1',[])">OpenRouter</button>
+          <button class="btn btng" style="font-size:11px;padding:4px 10px;" onclick="fillProviderPreset('lmstudio','LM Studio (local)','http://localhost:1234/v1',[])">LM Studio</button>
+        </div>
+        <div class="frow2" style="margin-bottom:0;">
+          <div><label class="flabel">ID (identifiant unique)</label><input id="pf-id" class="finput" placeholder="ex: gemini" /></div>
+          <div><label class="flabel">Label affiché</label><input id="pf-label" class="finput" placeholder="ex: Gemini perso" /></div>
+        </div>
+        <div><label class="flabel">Endpoint</label><input id="pf-endpoint" class="finput" placeholder="https://api.openai.com/v1" /></div>
+        <div>
+          <label class="flabel">Clé API <span style="color:var(--muted);font-weight:400;">(vide = pas d'authentification)</span></label>
+          <input id="pf-key" class="finput" type="password" placeholder="sk-... / AIza... / gsk-..." />
+        </div>
+        <div>
+          <label class="flabel">Modèles disponibles <span style="color:var(--muted);font-weight:400;">(optionnel — pour l'autocomplétion)</span></label>
+          <div id="pf-models-wrap" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;min-height:24px;"></div>
+          <div style="display:flex;gap:6px;">
+            <input id="pf-model-input" class="finput" placeholder="Nom du modèle (Entrée pour ajouter)"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();addProviderModel();}" />
+            <button type="button" class="btn btng" onclick="addProviderModel()" style="padding:6px 12px;font-size:12px;white-space:nowrap;">+</button>
+          </div>
+        </div>
+        <button class="btn btnp" onclick="saveProvider()" style="align-self:flex-end;">💾 Enregistrer</button>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Providers enregistrés</div>
+        <div id="providers-list"><div style="font-size:12px;color:var(--muted);">Chargement...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE MODAL -->
+<div id="cr-overlay" class="overlay" onclick="handleOverlayClick(event,'cr-overlay')">
+  <div class="modal" style="padding:24px;width:380px;max-width:95vw;">
+    <div style="font-weight:600;font-size:15px;margin-bottom:14px;">Nouvel agent</div>
+    <label class="flabel">Nom</label>
+    <input id="new-name" class="finput" placeholder="mon_agent" style="margin-bottom:16px;" onkeydown="if(event.key==='Enter')confirmCreate()" />
+    <div style="display:flex;justify-content:flex-end;gap:10px;">
+      <button class="btn btng" onclick="closeCreate()">Annuler</button>
+      <button class="btn btnp" onclick="confirmCreate()">Créer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     VIEW TEMPLATES — injected into #app by JS view objects
+════════════════════════════════════════════════════════ -->
+
+<template id="tpl-chat">
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="slabel">Agents</div>
+    <div id="agent-search-wrap">
+      <input id="agent-search" type="text" placeholder="Rechercher un agent..."
+        oninput="S.agentFilter=this.value;renderAgents()" />
+    </div>
+    <div id="mode-filter">
+      <button id="mode-filter-btn" class="mode-filter-btn" onclick="toggleLudiqueFilter()">
+        <span id="mode-filter-icon">🔧</span>
+        <span id="mode-filter-label">Utiles</span>
+      </button>
+    </div>
+    <div id="tag-filters" style="display:none;"></div>
+    <div id="aglist"><div class="empty" style="padding:20px;font-size:12px;">Chargement...</div></div>
+    <div class="sfooter">
+      <div id="rag-status">📚 KB partagée : chargement...</div>
+      <button class="sfooter-toggle" onclick="toggleSidebarConfig()" id="sfooter-toggle">
+        <span id="sfooter-toggle-arrow">▶</span> ⚙ Config
+      </button>
+      <div id="sfooter-actions" style="display:none;">
+        <button class="sbtn" onclick="indexKnowledge()" id="btn-index">📚 Indexer KB</button>
+        <button class="sbtn primary" onclick="openCreate()">+ Nouvel agent</button>
+        <button class="sbtn" onclick="openProvidersModal()">🔌 Providers</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div id="chat">
+    <div id="chatheader">
+      <div id="atitle" style="color:var(--muted);">Sélectionne un agent →</div>
+      <div id="amodelpill" class="pill" style="display:none;"></div>
+      <div id="aspawnpill" class="pill" style="display:none;background:var(--amber-dim);color:var(--amber);border-color:var(--amber);">⛓ spawn</div>
+      <button class="hdr-btn danger" onclick="clearAgentSession()" id="hdr-clear" style="display:none;margin-left:auto;">🗑 Effacer</button>
+    </div>
+    <div id="msgs">
+      <div class="empty">
+        <div class="eico">🤖</div>
+        <div style="font-weight:500;color:var(--text);">Sélectionne un agent</div>
+        <div style="font-size:12px;line-height:1.8;max-width:300px;">Chaque agent a son historique persistant — tu peux naviguer librement entre les agents.</div>
+      </div>
+    </div>
+    <div id="inputarea">
+      <textarea id="msginput" placeholder="Message... (Entrée pour envoyer, Maj+Entrée = saut de ligne)" rows="1" disabled></textarea>
+      <button id="sendbtn" onclick="sendOrStop()" disabled>Envoyer</button>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="rpanel">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('tok')">📊 Tokens</div>
+      <div class="tab" onclick="switchTab('logs')">📋 Logs</div>
+      <div class="tab" onclick="switchTab('tools')">🔧 Tools</div>
+      <div class="tab" onclick="switchTab('ctx')">⚙️ Contexte</div>
+    </div>
+
+    <!-- Tokens -->
+    <div class="tpane active" id="tp-tok">
+      <div id="tokpanel">
+        <div class="toknum"><span id="tt">0</span></div>
+        <div class="tokmax">/ <span id="tm">3000</span> tokens max</div>
+        <div class="gouter"><div class="ginner" id="tg" style="width:0%"></div></div>
+        <div class="trow"><div class="tlbl">System</div><div class="tbar-o"><div class="tbar bs_" id="ts" style="width:0%"></div></div><div class="tnum"><span id="tvs">0</span>/<span id="lims">600</span></div></div>
+        <div class="trow"><div class="tlbl">Historique</div><div class="tbar-o"><div class="tbar bh" id="th" style="width:0%"></div></div><div class="tnum"><span id="tvh">0</span>/<span id="limh">1000</span></div></div>
+        <div class="trow"><div class="tlbl">RAG</div><div class="tbar-o"><div class="tbar bg_" id="tr" style="width:0%"></div></div><div class="tnum"><span id="tvr">0</span>/<span id="limr">800</span></div></div>
+        <div class="trow"><div class="tlbl">Tools</div><div class="tbar-o"><div class="tbar bt" id="tt2" style="width:0%"></div></div><div class="tnum"><span id="tvt">0</span>/<span id="limt">300</span></div></div>
+        <div class="trow"><div class="tlbl">User</div><div class="tbar-o"><div class="tbar bu" id="tu" style="width:0%"></div></div><div class="tnum"><span id="tvu">0</span>/<span id="limu">300</span></div></div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;">Légende</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);"><span style="width:8px;height:8px;border-radius:50%;background:var(--purple);display:inline-block;"></span>System</span>
+            <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;"></span>Historique</span>
+            <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;"></span>RAG</span>
+            <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block;"></span>Tools</span>
+            <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);"><span style="width:8px;height:8px;border-radius:50%;background:var(--teal);display:inline-block;"></span>User</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logs -->
+    <div class="tpane" id="tp-logs">
+      <div style="padding:8px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+        <span style="font-size:11px;color:var(--muted);">Logs système temps réel</span>
+        <button onclick="clearLogs()" style="background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;">Effacer</button>
+      </div>
+      <div id="logscont"></div>
+    </div>
+
+    <!-- Tools -->
+    <div class="tpane" id="tp-tools">
+      <div style="padding:12px;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.7;">
+          Seuls les tools <strong>autorisés pour cet agent</strong> sont visibles du LLM.
+        </div>
+        <div id="toolslist"></div>
+      </div>
+    </div>
+
+    <!-- Context — par agent -->
+    <div class="tpane" id="tp-ctx">
+      <div id="ctxpanel">
+        <div class="clabel">Contexte — <span id="ctx-agent-name" style="color:var(--accent);text-transform:none;font-size:11px;">aucun agent</span></div>
+        <div id="ctx-no-agent" style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px;">Sélectionne un agent pour configurer ses limites de contexte.</div>
+        <div id="ctx-settings" style="display:none;">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.7;">
+            Limites propres à cet agent. La somme <em>system + historique + RAG + tools + user</em> doit être ≤ max.
+          </div>
+          <div class="csetting">
+            <div class="cslabel">Max total tokens <span id="cv-total">3000</span></div>
+            <input type="range" class="csrange" id="cr-total" min="500" max="16000" step="100"
+              oninput="document.getElementById('cv-total').textContent=this.value;updateCtxSum()" />
+          </div>
+          <div class="csetting">
+            <div class="cslabel">System prompt <span id="cv-system">600</span></div>
+            <input type="range" class="csrange" id="cr-system" min="100" max="4000" step="50"
+              oninput="document.getElementById('cv-system').textContent=this.value;updateCtxSum()" />
+          </div>
+          <div class="csetting">
+            <div class="cslabel">Historique <span id="cv-history">1000</span></div>
+            <input type="range" class="csrange" id="cr-history" min="100" max="8000" step="100"
+              oninput="document.getElementById('cv-history').textContent=this.value;updateCtxSum()" />
+          </div>
+          <div class="csetting">
+            <div class="cslabel">RAG <span id="cv-rag">800</span></div>
+            <input type="range" class="csrange" id="cr-rag" min="0" max="4000" step="50"
+              oninput="document.getElementById('cv-rag').textContent=this.value;updateCtxSum()" />
+          </div>
+          <div class="csetting">
+            <div class="cslabel">Tools <span id="cv-tools">300</span></div>
+            <input type="range" class="csrange" id="cr-tools" min="50" max="2000" step="50"
+              oninput="document.getElementById('cv-tools').textContent=this.value;updateCtxSum()" />
+          </div>
+          <div class="csetting">
+            <div class="cslabel">User input <span id="cv-user">300</span></div>
+            <input type="range" class="csrange" id="cr-user" min="50" max="2000" step="50"
+              oninput="document.getElementById('cv-user').textContent=this.value;updateCtxSum()" />
+          </div>
+          <div id="ctx-sum-warning" style="font-size:11px;font-family:var(--mono);padding:6px 8px;border-radius:6px;margin-bottom:8px;display:none;"></div>
+          <hr class="cs-divider" />
+          <button class="ctx-apply" onclick="applyContextLimits()">✅ Appliquer</button>
+          <button class="ctx-reset" onclick="resetContextLimits()">↺ Réinitialiser</button>
+          <div id="ctx-status" style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-salon">
+  <!-- SALON DE DÉBAT — main area -->
+  <div id="debate-view">
+    <div id="debate-config">
+      <div id="debate-config-title">🎭 Salon de débat</div>
+      <div>
+        <label class="flabel">Sujet</label>
+        <input id="debate-topic" class="finput" placeholder="Sur quoi vont-ils débattre ?" />
+      </div>
+      <div class="debate-row2">
+        <div>
+          <label class="flabel">Tours de parole (<span id="debate-turns-val">3</span>)</label>
+          <input type="range" id="debate-turns" min="1" max="10" value="3"
+            style="width:100%;accent-color:var(--accent);"
+            oninput="document.getElementById('debate-turns-val').textContent=this.value" />
+        </div>
+        <div id="debate-actions">
+          <button class="btn btnp" id="debate-launch-btn" onclick="launchDebate()">▶ Lancer</button>
+          <button class="btn btnd" id="debate-stop-btn" onclick="stopDebate()" style="display:none;">⏹ Arrêter</button>
+        </div>
+      </div>
+      <div class="debate-vote-opt" onclick="document.getElementById('debate-vote-toggle').click()">
+        <input type="checkbox" id="debate-vote-toggle" onclick="event.stopPropagation()"
+          style="accent-color:var(--accent);cursor:pointer;width:14px;height:14px;flex-shrink:0;" />
+        <span>🗳 Vote forcé à la fin — chaque agent vote POUR ou CONTRE après le débat</span>
+      </div>
+      <div>
+        <label class="flabel">Participants</label>
+        <div id="debate-agents-wrap"></div>
+      </div>
+    </div>
+    <div id="debate-msgs"></div>
+  </div>
+
+  <!-- LOGS — slim right panel -->
+  <div id="rpanel">
+    <div style="padding:8px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+      <span style="font-size:11px;font-weight:600;color:var(--muted);">📋 Logs</span>
+      <button onclick="clearLogs()" style="background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;">Effacer</button>
+    </div>
+    <div id="logscont"></div>
+  </div>
+</template>
+
+<template id="tpl-battle">
+  <!-- BATTLE ROYALE — main area -->
+  <div id="battle-view">
+    <div id="battle-config">
+      <div id="battle-config-title">⚔️ Battle Royale</div>
+      <div id="battle-actions">
+        <button class="btn btnp" id="battle-launch-btn" onclick="launchBattle()">▶ Lancer</button>
+        <button class="btn btnd" id="battle-stop-btn" onclick="stopBattle()" style="display:none;">⏹ Arrêter</button>
+      </div>
+      <div>
+        <label class="flabel">Participants <span style="color:var(--muted);font-weight:400;">(min. 3)</span></label>
+        <div id="battle-agents-wrap"></div>
+      </div>
+    </div>
+    <div id="battle-msgs"></div>
+  </div>
+
+  <!-- LOGS — slim right panel -->
+  <div id="rpanel">
+    <div style="padding:8px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+      <span style="font-size:11px;font-weight:600;color:var(--muted);">📋 Logs</span>
+      <button onclick="clearLogs()" style="background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;">Effacer</button>
+    </div>
+    <div id="logscont"></div>
+  </div>
+</template>
+
+<script src="app.js"></script>
+</body>
+</html>

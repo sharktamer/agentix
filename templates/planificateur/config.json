@@ -1,0 +1,21 @@
+{
+  "provider_id": "lmstudio",
+  "model": "votre-modele-puissant-ici",
+  "temperature": 0.3,
+  "max_tokens": 1024,
+  "allowed_tools": ["spawn_agent"],
+  "can_spawn": true,
+  "spawnable_agents": ["nom-de-votre-executeur"],
+  "max_iterations": 5,
+  "tags": ["orchestrateur", "multi-agents"],
+  "in_salon": false,
+  "in_battle": false,
+  "context_limits": {
+    "total": 4000,
+    "system": 1000,
+    "history": 1000,
+    "rag": 0,
+    "tools": 400,
+    "user": 1600
+  }
+}
