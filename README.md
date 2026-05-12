@@ -92,6 +92,8 @@ Le projet inclut trois agents prêts à l'emploi. Il suffit de leur assigner un 
 
 ### Socrate — agent conversationnel
 
+![Interface de chat avec Socrate](docs/chat.png)
+
 Agent philosophe utilisant la méthode maïeutique. Sans tools, contexte orienté vers l'historique long. Idéal pour :
 - Débuter avec Agentix (le cas le plus simple)
 - Tester le mode **Salon** (débat entre agents)
@@ -106,6 +108,8 @@ Agent orchestrateur qui reçoit une tâche système, interroge l'utilisateur sur
 Nécessite un modèle performant (raisonnement + planification). Fonctionne uniquement en tandem avec Centurion.
 
 ### Centurion — exécuteur SSH
+
+![Outils disponibles de Centurion](docs/outils.png)
 
 Agent d'exécution qui reçoit les instructions de Caesar et les exécute sur un serveur distant via SSH. Conçu pour tourner sur un modèle léger et local — son rôle est mécanique, pas analytique.
 
@@ -122,6 +126,8 @@ ssh-copy-id user@serveur-cible
 ## Créer un agent
 
 ### Via l'interface (recommandé)
+
+![Édition de la personnalité d'un agent](docs/modification.png)
 
 1. Cliquer **+ Nouvel agent** dans la colonne de gauche
 2. Saisir un nom — le dossier et les fichiers par défaut sont créés automatiquement
@@ -333,6 +339,8 @@ Débat structuré entre plusieurs agents sur un sujet libre. Idéal pour compare
 2. Chaque agent prend la parole à tour de rôle — il reçoit l'historique complet du débat, tronqué à son propre budget `history`
 3. Un agent avec un budget serré ne voit que les derniers échanges ; un agent avec plus de contexte voit plus loin en arrière
 4. **Vote final optionnel** : après le dernier tour, chaque agent émet un vote `POUR` ou `CONTRE` la proposition, suivi d'une justification
+
+![Résultat d'un vote en Salon avec Homer, Socrate et Claire](docs/salon.png)
 
 Seuls les agents avec `"in_salon": true` apparaissent dans la liste de sélection. Pour activer ce flag : éditeur ✏️ → onglet **Config** → cocher **Peut participer au Salon**.
 
