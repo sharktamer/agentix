@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agentix — IA agentique locale</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -22,11 +21,11 @@
 
 <!-- MOBILE NAV -->
 <nav id="mobile-nav">
-  <button class="mnav-btn active" data-tab="sidebar" onclick="mobileTab('sidebar')">
+  <button class="mnav-btn active" data-tab="sidebar" onclick="switchMode('chat');mobileTab('sidebar')">
     <span class="mnav-icon">🤖</span>
     <span>Agents</span>
   </button>
-  <button class="mnav-btn" data-tab="chat" onclick="mobileTab('chat')">
+  <button class="mnav-btn" data-tab="chat" onclick="switchMode('chat');mobileTab('chat')">
     <span class="mnav-icon">💬</span>
     <span>Chat</span>
   </button>

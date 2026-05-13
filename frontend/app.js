@@ -375,12 +375,13 @@ async function openEditorForAgent(name) {
 
 // ─── Mobile tabs ───────────────────────────────────────────────────────────
 function mobileTab(tab) {
-  ['sidebar','chat','rpanel'].forEach(p => {
-    document.getElementById(p)?.classList.toggle('m-active', p === tab);
-  });
-  document.querySelectorAll('.mnav-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tab === tab);
-  });
+  const panelMap = { sidebar:'sidebar', chat:'chat', rpanel:'rpanel', salon:'debate-view', battle:'battle-view' };
+  ['sidebar','chat','rpanel','debate-view','battle-view'].forEach(p =>
+    document.getElementById(p)?.classList.remove('m-active'));
+  const target = panelMap[tab];
+  if (target) document.getElementById(target)?.classList.add('m-active');
+  document.querySelectorAll('.mnav-btn').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.tab === tab));
 }
 
 // ─── Session persistante ───────────────────────────────────────────────────
@@ -1087,7 +1088,7 @@ function switchMode(mode) {
   const activeTab = S.mode === 'debate' ? 'salon' : S.mode === 'battle' ? 'battle' : 'chat';
   document.querySelectorAll('.mnav-btn').forEach(btn =>
     btn.classList.toggle('active', btn.dataset.tab === activeTab));
-  if (isMobile()) mobileTab('chat');
+  if (isMobile()) mobileTab(activeTab);
 }
 
 function renderDebateAgents() {

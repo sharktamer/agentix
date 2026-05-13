@@ -314,16 +314,21 @@ code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;font
   /* Layout : empile les panneaux */
   #app{display:block;flex:1;position:relative;overflow:hidden;}
 
-  #sidebar,#chat,#rpanel{
+  #sidebar,#chat,#rpanel,#debate-view,#battle-view{
     position:absolute;inset:0;
     display:none;
     border:none;
   }
   #sidebar.m-active,#chat.m-active,#rpanel.m-active{display:flex;}
+  #debate-view.m-active,#battle-view.m-active{display:flex;flex-direction:column;}
 
-  /* Header simplifié */
+  /* Compenser la nav en bas dans la sidebar */
+  #sidebar{padding-bottom:56px;}
+
+  /* Header simplifié — on cache les boutons de mode (déjà dans la nav mobile) */
   .hdr-badge{display:none;}
   #lmstatus .lm-text{display:none;}
+  #hdr-salon,#hdr-battle{display:none;}
 
   /* Padding réduit */
   #msgs{padding:12px;gap:10px;}
