@@ -395,6 +395,13 @@ async function openEditorForAgent(name) {
 }
 
 // ─── Mobile tabs ───────────────────────────────────────────────────────────
+function toggleAgentSearch() {
+  const sb  = document.getElementById('sidebar');
+  const btn = document.getElementById('search-toggle');
+  sb.classList.toggle('search-collapsed');
+  if (btn) btn.textContent = sb.classList.contains('search-collapsed') ? '▶' : '▼';
+}
+
 function toggleDebateConfig() {
   const el = document.getElementById('debate-config');
   const btn = document.getElementById('debate-config-toggle');
@@ -1122,6 +1129,8 @@ function switchMode(mode) {
   const activeTab = S.mode === 'debate' ? 'salon' : S.mode === 'battle' ? 'battle' : 'chat';
   document.querySelectorAll('.mnav-btn').forEach(btn =>
     btn.classList.toggle('active', btn.dataset.tab === activeTab));
+  const infoBtn = document.querySelector('.mnav-btn[data-tab="rpanel"]');
+  if (infoBtn) infoBtn.style.display = S.mode === 'chat' ? '' : 'none';
   if (isMobile()) mobileTab(activeTab);
 }
 

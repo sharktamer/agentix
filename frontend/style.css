@@ -361,9 +361,13 @@ code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;font
     border-radius:5px;cursor:pointer;font-size:10px;
     padding:2px 7px;margin-left:auto;transition:all .15s;
   }
-  #debate-config-title,#battle-config-title{display:flex;align-items:center;}
+  #debate-config-title,#battle-config-title,
+  .slabel{display:flex;align-items:center;}
   #debate-config.collapsed>*:not(:first-child),
   #battle-config.collapsed>*:not(:first-child){display:none !important;}
+  #sidebar.search-collapsed #agent-search-wrap,
+  #sidebar.search-collapsed #mode-filter,
+  #sidebar.search-collapsed #tag-filters{display:none !important;}
 
   /* Bottom navigation */
   #mobile-nav{

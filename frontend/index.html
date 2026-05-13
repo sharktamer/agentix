@@ -198,7 +198,7 @@
 <template id="tpl-chat">
   <!-- SIDEBAR -->
   <div id="sidebar">
-    <div class="slabel">Agents</div>
+    <div class="slabel">Agents<button id="search-toggle" class="cfg-toggle" onclick="toggleAgentSearch()">▼</button></div>
     <div id="agent-search-wrap">
       <input id="agent-search" type="text" placeholder="Rechercher un agent..."
         oninput="S.agentFilter=this.value;renderAgents()" />
