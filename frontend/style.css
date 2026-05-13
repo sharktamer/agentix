@@ -299,6 +299,14 @@ code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;font
 #mobile-nav{display:none;}
 
 /* ══════════════════════════════════════════════════════
+   RESPONSIVE — tablette 769–1024px
+══════════════════════════════════════════════════════ */
+@media (min-width: 769px) and (max-width: 1024px) {
+  #app.mode-chat{grid-template-columns:190px 1fr 230px;}
+  #app.mode-salon,#app.mode-battle{grid-template-columns:1fr 220px;}
+}
+
+/* ══════════════════════════════════════════════════════
    RESPONSIVE — mobile ≤ 768px
 ══════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
@@ -306,23 +314,39 @@ code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;font
   /* Layout : empile les panneaux */
   #app{display:block;flex:1;position:relative;overflow:hidden;}
 
-  #sidebar, #chat, #rpanel{
+  #sidebar,#chat,#rpanel{
     position:absolute;inset:0;
     display:none;
     border:none;
   }
-  #sidebar.m-active, #chat.m-active, #rpanel.m-active{display:flex;}
-
+  #sidebar.m-active,#chat.m-active,#rpanel.m-active{display:flex;}
 
   /* Header simplifié */
   .hdr-badge{display:none;}
   #lmstatus .lm-text{display:none;}
 
-  /* Input zone : padding pour ne pas être caché par la nav */
-  #inputarea{padding-bottom:calc(14px + env(safe-area-inset-bottom, 0px));}
+  /* Padding réduit */
+  #msgs{padding:12px;gap:10px;}
+  #chatheader{padding:8px 14px;}
+  #debate-config,#battle-config{padding:10px 14px;}
+  #debate-msgs,#battle-msgs{padding:12px;}
 
-  /* Modals plein écran */
+  /* Input zone */
+  #inputarea{padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)) 12px;position:sticky;bottom:0;background:var(--bg);}
+
+  /* Modals */
   .modal{width:96vw !important;max-height:88vh !important;}
+  .mhdr{padding:12px 16px;}
+  .mbody{padding:14px 16px;}
+  .mfooter{padding:10px 16px;}
+  textarea.code{min-height:180px;}
+
+  /* Forms : 1 colonne */
+  .frow2{grid-template-columns:1fr;}
+
+  /* Débat / Battle : bouton sous le champ */
+  .debate-row2{grid-template-columns:1fr;}
+  #debate-actions,#battle-actions{flex-wrap:wrap;}
 
   /* Bottom navigation */
   #mobile-nav{
@@ -332,7 +356,7 @@ code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;font
     background:var(--bg2);
     border-top:1px solid var(--border);
     z-index:40;
-    padding-bottom:env(safe-area-inset-bottom, 0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
   }
   .mnav-btn{
     flex:1;background:none;border:none;
@@ -347,7 +371,28 @@ code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;font
 
   /* Compenser la nav en bas */
   #chat{padding-bottom:56px;}
-  #inputarea{position:sticky;bottom:0;background:var(--bg);}
   #debate-msgs{padding-bottom:70px;}
   #battle-msgs{padding-bottom:70px;}
+}
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE — paysage mobile
+══════════════════════════════════════════════════════ */
+@media (max-width: 768px) and (orientation: landscape) {
+  #header{height:44px;}
+  #mobile-nav{height:48px;}
+  #chat{padding-bottom:48px;}
+  #debate-msgs,#battle-msgs{padding-bottom:62px;}
+}
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE — très petits écrans ≤ 360px
+══════════════════════════════════════════════════════ */
+@media (max-width: 360px) {
+  #msgs{padding:8px;gap:8px;}
+  #inputarea{padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px)) 8px;}
+  .mhdr{padding:10px 12px;}
+  .mbody{padding:10px 12px;}
+  .mfooter{padding:8px 12px;}
+  .acard{padding:6px 10px;}
 }
