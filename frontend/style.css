@@ -234,6 +234,9 @@ textarea.code:focus{border-color:var(--accent);}
 ::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;font-family:var(--mono);}
 
+/* ── Config collapse toggle (mobile only) ────────────── */
+.cfg-toggle{display:none;}
+
 /* ── Débat ───────────────────────────────────────────── */
 #debate-view{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
 #debate-config{padding:14px 20px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;gap:10px;}
@@ -315,15 +318,12 @@ code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;font
   #app{display:block;flex:1;position:relative;overflow:hidden;}
 
   #sidebar,#chat,#rpanel,#debate-view,#battle-view{
-    position:absolute;inset:0;
+    position:absolute;top:0;left:0;right:0;bottom:56px;
     display:none;
     border:none;
   }
   #sidebar.m-active,#chat.m-active,#rpanel.m-active{display:flex;}
   #debate-view.m-active,#battle-view.m-active{display:flex;flex-direction:column;}
-
-  /* Compenser la nav en bas dans la sidebar */
-  #sidebar{padding-bottom:56px;}
 
   /* Header simplifié — on cache les boutons de mode (déjà dans la nav mobile) */
   .hdr-badge{display:none;}
@@ -337,7 +337,7 @@ code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;font
   #debate-msgs,#battle-msgs{padding:12px;}
 
   /* Input zone */
-  #inputarea{padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)) 12px;position:sticky;bottom:0;background:var(--bg);}
+  #inputarea{padding:10px 12px;background:var(--bg);}
 
   /* Modals */
   .modal{width:96vw !important;max-height:88vh !important;}
@@ -352,6 +352,17 @@ code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;font
   /* Débat / Battle : bouton sous le champ */
   .debate-row2{grid-template-columns:1fr;}
   #debate-actions,#battle-actions{flex-wrap:wrap;}
+
+  /* Config collapsible */
+  .cfg-toggle{
+    display:inline-flex;align-items:center;
+    background:none;border:1px solid var(--border);color:var(--muted);
+    border-radius:5px;cursor:pointer;font-size:10px;
+    padding:2px 7px;margin-left:auto;transition:all .15s;
+  }
+  #debate-config-title,#battle-config-title{display:flex;align-items:center;}
+  #debate-config.collapsed>*:not(:first-child),
+  #battle-config.collapsed>*:not(:first-child){display:none !important;}
 
   /* Bottom navigation */
   #mobile-nav{
@@ -374,10 +385,6 @@ code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;font
   .mnav-btn .mnav-icon{font-size:18px;line-height:1;}
   .mnav-btn.active{color:var(--accent);}
 
-  /* Compenser la nav en bas */
-  #chat{padding-bottom:56px;}
-  #debate-msgs{padding-bottom:70px;}
-  #battle-msgs{padding-bottom:70px;}
 }
 
 /* ══════════════════════════════════════════════════════
@@ -386,8 +393,7 @@ code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;font
 @media (max-width: 768px) and (orientation: landscape) {
   #header{height:44px;}
   #mobile-nav{height:48px;}
-  #chat{padding-bottom:48px;}
-  #debate-msgs,#battle-msgs{padding-bottom:62px;}
+  #sidebar,#chat,#rpanel,#debate-view,#battle-view{bottom:48px;}
 }
 
 /* ══════════════════════════════════════════════════════
@@ -395,7 +401,7 @@ code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:11px;font
 ══════════════════════════════════════════════════════ */
 @media (max-width: 360px) {
   #msgs{padding:8px;gap:8px;}
-  #inputarea{padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px)) 8px;}
+  #inputarea{padding:8px;}
   .mhdr{padding:10px 12px;}
   .mbody{padding:10px 12px;}
   .mfooter{padding:8px 12px;}

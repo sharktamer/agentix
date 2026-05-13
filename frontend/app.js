@@ -54,13 +54,32 @@ function debateColor(name) {
 
 // ─── Views ─────────────────────────────────────────────────────────────────
 let _currentView = null;
+const _viewCache = {};
+
+function _saveView(name) {
+  const app = document.getElementById('app');
+  const frag = document.createDocumentFragment();
+  while (app.firstChild) frag.appendChild(app.firstChild);
+  _viewCache[name] = frag;
+}
+
+function _restoreView(name) {
+  if (!_viewCache[name]) return false;
+  document.getElementById('app').appendChild(_viewCache[name]);
+  delete _viewCache[name];
+  return true;
+}
 
 const ChatView = {
   mount() {
     const app = document.getElementById('app');
     app.className = 'mode-chat';
+    if (_restoreView('chat')) {
+      renderAgents();
+      renderTagFilters();
+      return;
+    }
     app.appendChild(document.getElementById('tpl-chat').content.cloneNode(true));
-    // Restore mode filter button state
     const mfBtn = document.getElementById('mode-filter-btn');
     if (mfBtn) {
       mfBtn.classList.toggle('ludique', S.showLudique);
@@ -85,27 +104,29 @@ const ChatView = {
       connectWS();
     }
   },
-  teardown() { document.getElementById('app').innerHTML = ''; },
+  teardown() { _saveView('chat'); },
 };
 
 const SalonView = {
   mount() {
     const app = document.getElementById('app');
     app.className = 'mode-salon';
+    if (_restoreView('salon')) { renderDebateAgents(); return; }
     app.appendChild(document.getElementById('tpl-salon').content.cloneNode(true));
     renderDebateAgents();
   },
-  teardown() { document.getElementById('app').innerHTML = ''; },
+  teardown() { _saveView('salon'); },
 };
 
 const BattleView = {
   mount() {
     const app = document.getElementById('app');
     app.className = 'mode-battle';
+    if (_restoreView('battle')) { renderBattleAgents(); return; }
     app.appendChild(document.getElementById('tpl-battle').content.cloneNode(true));
     renderBattleAgents();
   },
-  teardown() { document.getElementById('app').innerHTML = ''; },
+  teardown() { _saveView('battle'); },
 };
 
 // ─── Init ──────────────────────────────────────────────────────────────────
@@ -374,6 +395,19 @@ async function openEditorForAgent(name) {
 }
 
 // ─── Mobile tabs ───────────────────────────────────────────────────────────
+function toggleDebateConfig() {
+  const el = document.getElementById('debate-config');
+  const btn = document.getElementById('debate-config-toggle');
+  el.classList.toggle('collapsed');
+  if (btn) btn.textContent = el.classList.contains('collapsed') ? '▶' : '▼';
+}
+function toggleBattleConfig() {
+  const el = document.getElementById('battle-config');
+  const btn = document.getElementById('battle-config-toggle');
+  el.classList.toggle('collapsed');
+  if (btn) btn.textContent = el.classList.contains('collapsed') ? '▶' : '▼';
+}
+
 function mobileTab(tab) {
   const panelMap = { sidebar:'sidebar', chat:'chat', rpanel:'rpanel', salon:'debate-view', battle:'battle-view' };
   ['sidebar','chat','rpanel','debate-view','battle-view'].forEach(p =>

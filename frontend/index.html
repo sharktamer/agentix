@@ -351,7 +351,7 @@
   <!-- SALON DE DÉBAT — main area -->
   <div id="debate-view">
     <div id="debate-config">
-      <div id="debate-config-title">🎭 Salon de débat</div>
+      <div id="debate-config-title">🎭 Salon de débat<button id="debate-config-toggle" class="cfg-toggle" onclick="toggleDebateConfig()">▼</button></div>
       <div>
         <label class="flabel">Sujet</label>
         <input id="debate-topic" class="finput" placeholder="Sur quoi vont-ils débattre ?" />
@@ -395,7 +395,7 @@
   <!-- BATTLE ROYALE — main area -->
   <div id="battle-view">
     <div id="battle-config">
-      <div id="battle-config-title">⚔️ Battle Royale</div>
+      <div id="battle-config-title">⚔️ Battle Royale<button id="battle-config-toggle" class="cfg-toggle" onclick="toggleBattleConfig()">▼</button></div>
       <div id="battle-actions">
         <button class="btn btnp" id="battle-launch-btn" onclick="launchBattle()">▶ Lancer</button>
         <button class="btn btnd" id="battle-stop-btn" onclick="stopBattle()" style="display:none;">⏹ Arrêter</button>
